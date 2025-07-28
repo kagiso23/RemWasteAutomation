@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="React CRUD Suite">
+  <test name="API and UI Tests">
+    <packages>
+      <package name="api"/>
+      <package name="ui.tests"/>
+    </packages>
+  </test>
+</suite>

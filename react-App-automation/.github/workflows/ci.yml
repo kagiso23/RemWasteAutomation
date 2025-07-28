@@ -1,0 +1,51 @@
+
+name: React CRUD Automation Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      selenium:
+        image: selenium/standalone-chrome
+        ports:
+          - 4444:4444
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install Maven dependencies
+      run: mvn install -DskipTests
+
+    - name: Start Node.js Backend
+      run: |
+        cd ../react-crud-app/backend
+        npm install
+        nohup node index.js &
+      shell: bash
+
+    - name: Start React Frontend
+      run: |
+        cd ../react-crud-app/frontend
+        npm install
+        nohup npm start -- --port 3000 &
+      shell: bash
+
+    - name: Wait for services to start
+      run: sleep 20
+
+    - name: Run tests
+      run: mvn test
